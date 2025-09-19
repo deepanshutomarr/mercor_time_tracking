@@ -21,3 +21,7 @@ afterEach(async () => {
     await collection.deleteMany({});
   }
 });
+
+test('setup runs', () => {
+  expect(true).toBe(true);
+});
