@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: mercor-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: mercor-time-tracking
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - mercor-network
+
+  # Backend API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: mercor-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/mercor-time-tracking?authSource=admin
+      JWT_SECRET: tesr7i+ihywY6xBxYBWzlsSV68sCsce4hg1ToL1ypxo=
+      JWT_EXPIRES_IN: 7d
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: tomardeepanshu12@gmail.com
+      SMTP_PASS: roet zeji umtv kyte
+      EMAIL_FROM: noreply@mercor.com
+      API_BASE_URL: http://localhost:3000/api/v1
+      WEB_APP_URL: http://localhost:3001
+      DESKTOP_APP_URL: http://localhost:3002
+    depends_on:
+      - mongodb
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    networks:
+      - mercor-network
+
+  # Web Frontend
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: mercor-web
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      VITE_API_BASE_URL: http://localhost:3000/api/v1
+    depends_on:
+      - api
+    networks:
+      - mercor-network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: mercor-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - api
+      - web
+    networks:
+      - mercor-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  mercor-network:
+    driver: bridge

@@ -1,0 +1,75 @@
+{
+  "name": "mercor-time-tracking-desktop",
+  "version": "1.0.0",
+  "description": "Desktop application for Mercor Time Tracking",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:renderer\" \"npm run dev:main\"",
+    "dev:main": "tsc -p tsconfig.main.json && electron dist/main.js",
+    "dev:renderer": "vite",
+    "build": "npm run build:main && npm run build:renderer",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:renderer": "vite build",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "pack": "npm run build && electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps",
+    "start": "electron dist/main.js"
+  },
+  "build": {
+    "appId": "com.mercor.time-tracking",
+    "productName": "Mercor Time Tracking",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icon.png",
+      "category": "Office"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "electron": "^28.1.0",
+    "electron-store": "^8.1.0",
+    "node-cron": "^3.0.3",
+    "screenshot-desktop": "^1.12.7",
+    "sharp": "^0.33.0",
+    "systeminformation": "^5.21.15"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "electron-builder": "^24.9.1",
+    "eslint": "^8.54.0",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.3.2",
+    "vite": "^5.0.8"
+  }
+}
