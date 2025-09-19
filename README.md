@@ -2,6 +2,9 @@
 
 A comprehensive time tracking solution built for the Mercor assessment. This application provides a complete time tracking system with employee management, project tracking, automatic screenshot capture, and detailed analytics.
 
+## Demo Video
+[Watch the Demo](https://drive.google.com/file/d/1ojTZwbQnfj0jwBi1KhVP-4OQxkpt612K/view?usp=sharing)
+
 ## 🚀 Features
 
 ### Backend API
